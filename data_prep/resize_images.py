@@ -4,7 +4,7 @@ from pathlib import Path
 from tqdm import tqdm
 
 # --- CONFIGURATION ---
-DATA_DIR = Path("/home/xrdev/Desktop/GPU-tests/gaussian-splatting/GsplatTest/gsplat/examples/datasets/data/360_v2/bicycle_15fps") 
+DATA_DIR = Path("") 
 FACTOR = 2  
 # ---------------------
 
@@ -28,7 +28,6 @@ def resize_images(data_dir, factor):
         src_path = src_dir / fname
         
         # GSPLAT SPECIFIC CHANGE:
-        # Ensure destination is .png
         dst_fname = Path(fname).with_suffix('.png') 
         dst_path = dst_dir / dst_fname
         
