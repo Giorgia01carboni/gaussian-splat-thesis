@@ -24,8 +24,8 @@ from torchmetrics.image import PeakSignalNoiseRatio, StructuralSimilarityIndexMe
 from torchmetrics.image.lpip import LearnedPerceptualImagePatchSimilarity
 from simple_trainer import Runner, Config
 
-BASELINE_DATA_DIR = "/home/xrdev/Desktop/GPU-tests/gaussian-splatting/GsplatTest/gsplat/examples/datasets/data/360_v2/bicycle"
-RESULTS_BASE_DIR = "/home/xrdev/Desktop/GPU-tests/gaussian-splatting/GsplatTest/gsplat/examples/results"
+BASELINE_DATA_DIR = "/gsplat/examples/datasets/data/360_v2/bicycle"
+RESULTS_BASE_DIR = "/gsplat/examples/results"
 
 CHECKPOINTS = {
     "Baseline": os.path.join(RESULTS_BASE_DIR, "bicycle/ckpts/ckpt_29999_rank0.pt"),
