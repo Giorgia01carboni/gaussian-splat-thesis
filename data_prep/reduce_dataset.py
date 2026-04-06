@@ -5,13 +5,11 @@ from scipy.spatial.transform import Rotation
 from read_write_model import read_model, write_model
 
 # --- CONFIGURATION ---
-ORIGINAL_DATA_DIR = "/home/xrdev/Desktop/GPU-tests/gaussian-splatting/GsplatTest/gsplat/examples/datasets/data/360_v2/bicycle"
-NEW_DATA_DIR = "/home/xrdev/Desktop/GPU-tests/gaussian-splatting/GsplatTest/gsplat/examples/datasets/data/360_v2/bicycle_reduced"
+ORIGINAL_DATA_DIR = "/gsplat/examples/datasets/data/360_v2/bicycle"
+NEW_DATA_DIR = "/gsplat/examples/datasets/data/360_v2/bicycle_reduced"
 
-# The number of training images you want to extract via FPS
 NUM_TRAIN_VIEWS = 24 
 
-# The exact filenames of the 5 images to test against 
 GLOBAL_TEST_VIEWS = [
     "_DSC8679.JPG", 
     "_DSC8687.JPG",
@@ -65,25 +63,20 @@ def compute_fps_on_cameras(images_dict, num_views):
 
     return [images_dict[image_ids[idx]].name for idx in selected_indices]
 
-# --- EXECUTION FLOW ---
 def main():
     print("Loading original COLMAP model...")
     cameras, images, points3D = read_model(path=ORIG_SPARSE_DIR, ext=".bin")
     
-    # 1. Isolate training pool by removing test views
     train_pool_images = {
         img_id: img_data for img_id, img_data in images.items() 
         if img_data.name not in GLOBAL_TEST_VIEWS
     }
     
-    # 2. Run FPS to get optimally distributed training views
     print(f"Running FPS to select {NUM_TRAIN_VIEWS} training views...")
     selected_train_names = compute_fps_on_cameras(train_pool_images, NUM_TRAIN_VIEWS)
     
-    # 3. Combine selected train views and the fixed test views
     allowed_names = set(selected_train_names + GLOBAL_TEST_VIEWS)
     
-    # 4. Filter the images dictionary
     filtered_images = {
         img_id: img_data for img_id, img_data in images.items() 
         if img_data.name in allowed_names
@@ -91,7 +84,6 @@ def main():
     
     print(f"Total images in new dataset: {len(filtered_images)} ({NUM_TRAIN_VIEWS} train + {len(GLOBAL_TEST_VIEWS)} test)")
 
-    # 5. Copy physical image files
     print(f"Copying images to {NEW_IMAGES_DIR}...")
     for img_name in allowed_names:
         src_path = os.path.join(ORIG_IMAGES_DIR, img_name)
@@ -101,7 +93,6 @@ def main():
         else:
             print(f"WARNING: File {src_path} not found.")
 
-    # 6. Write the filtered COLMAP model
     print(f"Writing updated COLMAP model to {NEW_SPARSE_DIR}...")
     write_model(cameras, filtered_images, points3D, path=NEW_SPARSE_DIR, ext=".bin")
     print("Process complete.")
